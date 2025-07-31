@@ -13,14 +13,19 @@ ALERT_FIELDS = ("Host", "Service", "State")
 
 client = WebClient(token=SLACK_TOKEN)
 
-try:
-    response = client.auth_test()
-    print(response)
-except SlackApiError as e:
-    print(e.response["error"])
-
 
 # ------------ Utilities ------------
+
+
+def test_connection():
+    try:
+        response = client.auth_test()
+        team = response.get("team", "Unknown Team")
+        user = response.get("user", "Unknown User")
+        print(f"Connected to Slack workspace: {team} (user: {user})")
+    except SlackApiError as e:
+        print(f"Slack auth failed: {e.response['error']}")
+        exit(1)
 
 
 def get_channel_id(channel_name):
@@ -75,6 +80,8 @@ def parse_alert(text):
 
 
 def main():
+    test_connection()
+
     channel_id = get_channel_id(CHANNEL_NAME)
     if not channel_id:
         print("Channel not found")
