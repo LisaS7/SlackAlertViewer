@@ -1,4 +1,5 @@
 from slack_client import test_connection, parse_all_alerts
+from ui import display_alerts
 
 
 def main():
@@ -6,7 +7,7 @@ def main():
     alerts = parse_all_alerts()
 
     if alerts:
-        print(alerts)
+        display_alerts(alerts)
 
 
 if __name__ == "__main__":
