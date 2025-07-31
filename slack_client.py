@@ -4,9 +4,6 @@ from slack_sdk.errors import SlackApiError
 import config
 from utilities import parse_alert
 
-
-print(config.SLACK_TOKEN)
-
 client = WebClient(token=config.SLACK_TOKEN)
 
 
