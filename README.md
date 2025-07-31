@@ -11,6 +11,45 @@ A simple Python tool to pull and display alerts from a Slack channel in a clean,
 
 ---
 
+## Setup: Creating Your Slack App
+
+To use this tool, you'll need to create a Slack app with the correct permissions. Here's how:
+
+### 1. Create a Slack App
+
+1. Go to [https://api.slack.com/apps](https://api.slack.com/apps)
+2. Click **“Create New App”**
+3. Choose **“From scratch”**
+4. Name your app (e.g. `SlackAlertsViewer`)
+5. Select your Slack workspace and click **Create App**
+
+
+### 2. Add Required Scopes
+
+Go to **OAuth & Permissions** in the sidebar, then scroll to **Bot Token Scopes**.
+
+Add the following scopes:
+
+- `channels:read` – to view public channels
+- `channels:history` – to read messages from those channels
+
+If your alert channel is **private**, also add:
+
+- `groups:read`  
+- `groups:history`  
+> And make sure your bot is invited to the private channel!
+
+
+### 3. Install the App to Your Workspace
+
+1. Still in the **OAuth & Permissions** page, scroll to the top
+2. Click **Install to Workspace**
+3. Authorize the app
+4. Copy the **Bot User OAuth Token** (starts with `xoxb-`)
+5. We will need to add this token to the .env file after cloning the repo (see next section, step 4)
+
+---
+
 ## Installation
 
 ### 1. Clone the repo
@@ -38,7 +77,9 @@ SLACK_TOKEN=xoxb-your-slack-bot-token
 If you don't have a Slack token you can generate one at https://api.slack.com/apps
 
 ### 5. Run the script
-
+```bash
+python3 main.py
+```
 
 
 ### macOS SSL Error: `CERTIFICATE_VERIFY_FAILED`
