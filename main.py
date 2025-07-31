@@ -8,6 +8,8 @@ load_dotenv()
 # ------------ Configuration ------------
 SLACK_TOKEN = os.getenv("SLACK_TOKEN")
 CHANNEL_NAME = "check-alerts"
+ALERT_TYPES = ("PROBLEM", "RECOVERY")
+ALERT_FIELDS = ("Host", "Service", "State")
 
 client = WebClient(token=SLACK_TOKEN)
 
@@ -42,6 +44,33 @@ def fetch_messages(channel_id, limit=10):
         return []
 
 
+def parse_alert(text):
+    lines = text.strip().splitlines()
+
+    # check if alert is something we care about
+    if not lines or not lines[0].startswith("Service"):
+        return None
+
+    data = {
+        "type": "UNKNOWN",
+        "host": None,
+        "service": None,
+        "state": None,
+    }
+
+    matches = [type for type in ALERT_TYPES if type in lines[0].upper()]
+    data["type"] = matches[0] if matches else "UNKNOWN"
+
+    for i, line in enumerate(lines[1:], start=1):
+        if line.startswith(ALERT_FIELDS):
+            key, value = [text.strip() for text in line.split(":", 1)]
+            data[key.lower()] = value
+        elif "Additional Info" in line:
+            data["message"] = "\n".join(lines[i + 1 :]).strip()
+
+    print(data)
+
+
 # ------------ Main Loop ------------
 
 
@@ -53,7 +82,7 @@ def main():
 
     messages = fetch_messages(channel_id)
     for msg in messages:
-        print(msg["text"])
+        parse_alert(msg.get("text", ""))
 
 
 if __name__ == "__main__":
